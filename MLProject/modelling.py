@@ -10,6 +10,7 @@ def main():
     train_df = pd.read_csv("churn_preprocessing/train.csv")
     test_df = pd.read_csv("churn_preprocessing/test.csv")
 
+#tanda
     X_train = train_df.drop('Exited', axis=1)
     y_train = train_df['Exited']
 
