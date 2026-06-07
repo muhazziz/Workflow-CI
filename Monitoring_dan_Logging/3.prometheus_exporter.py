@@ -5,8 +5,8 @@ import psutil
 import time
 import random
 
-MODEL_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\Membangun_model\mlartifacts\1\24a0b28a87024ef8abba8ea2d5062d6e\artifacts\model\model.pkl"
-DATA_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\Membangun_model\churn_preprocessing\test.csv"
+MODEL_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\Membangun_model\mlartifacts\1\models\m-bf4ee8f846a34a4da977afd1e20cb931\artifacts\model.pkl"
+DATA_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\churn_preprocessing\test.csv"
 
 model = joblib.load(MODEL_PATH)
 data = pd.read_csv(DATA_PATH)
