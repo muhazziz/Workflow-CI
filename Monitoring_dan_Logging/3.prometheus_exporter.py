@@ -3,10 +3,9 @@ import pandas as pd
 from prometheus_client import start_http_server, Counter, Gauge, Histogram
 import psutil
 import time
-import random
 
 MODEL_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\Membangun_model\mlartifacts\1\models\m-bf4ee8f846a34a4da977afd1e20cb931\artifacts\model.pkl"
-DATA_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\churn_preprocessing\test.csv"
+DATA_PATH = r"C:\Users\muham_ogp6gj0\Eksperimen_SML_Muh-Azizsyah-Putra\Membangun_model\churn_preprocessing\test.csv"
 
 model = joblib.load(MODEL_PATH)
 data = pd.read_csv(DATA_PATH)
@@ -25,23 +24,29 @@ DISK_USAGE = Gauge('system_disk_usage', 'Disk Usage Percentage')
 NETWORK_BYTES = Counter('network_bytes_total', 'Network Bytes Transmitted')
 
 def collect_metrics():
-    CPU_USAGE.set(psutil.cpu_percent())
+    CPU_USAGE.set(psutil.cpu_percent(interval=1))
     RAM_USAGE.set(psutil.virtual_memory().percent)
-    DISK_USAGE.set(psutil.disk_usage('/').percent)
-    REQUESTS.inc(random.randint(1, 5))
-    ACTIVE_CONN.set(random.randint(10, 50))
-    NETWORK_BYTES.inc(random.randint(500, 2000))
+    DISK_USAGE.set(psutil.disk_usage('C:\\').percent)
+
+    net = psutil.net_io_counters()
+    NETWORK_BYTES.inc(net.bytes_sent + net.bytes_recv)
+
+    ACTIVE_CONN.set(len(psutil.net_connections()))
 
     try:
         sample = data.sample(n=1)
         start = time.time()
         prediction = model.predict(sample)[0]
         LATENCY.observe(time.time() - start)
+        REQUESTS.inc()
+
         if prediction == 1:
             CHURN_PREDS.inc()
         else:
             RETAIN_PREDS.inc()
-    except Exception:
+
+    except Exception as e:
+        print(f"Error: {e}")
         ERRORS.inc()
 
 if __name__ == '__main__':
